@@ -31,6 +31,7 @@ PLATS= aix bsd c89 freebsd generic linux macosx mingw posix solaris
 
 LUA_A=	liblua.a
 LUA_SO= liblua.so
+LUAD_SO= libluad.so
 CORE_O=	lapi.o lcode.o lctype.o ldebug.o ldo.o ldump.o lfunc.o lgc.o llex.o \
 	lmem.o lobject.o lopcodes.o lparser.o lstate.o lstring.o ltable.o \
 	ltm.o lundump.o lvm.o lzio.o
@@ -69,13 +70,18 @@ $(LUAC_T): $(LUAC_O) $(LUA_A)
 
 $(LUA_SO): $(CORE_O) $(LIB_O)
 	$(CC) -shared -ldl -Wl,-soname,$(LUA_SO).$(V) -o $@.$(R) $? -lm $(MYLDFLAGS)
+	cp $(LUA_SO).$(R) $(LUAD_SO).$(R)
+	ln -sf $(LUAD_SO).$(R) $(LUAD_SO).$(V)
+	ln -sf $(LUAD_SO).$(R) $(LUAD_SO)
+	
 	ln -sf $(LUA_SO).$(R) $(LUA_SO).$(V)
 	ln -sf $(LUA_SO).$(R) $(LUA_SO)
 	strip $(LUA_SO).$(R)
 
 
+
 clean:
-	$(RM) $(ALL_T) $(ALL_O) $(LUA_SO) $(LUA_SO).$(V) $(LUA_SO).$(R)
+	$(RM) $(ALL_T) $(ALL_O) $(LUA_SO) $(LUA_SO).$(V) $(LUA_SO).$(R) $(LUAD_SO) $(LUAD_SO).$(V) $(LUAD_SO).$(R)
 	@echo $(ALL_T) $(ALL_O)
 
 depend:
